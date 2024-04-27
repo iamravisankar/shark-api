@@ -18,11 +18,11 @@ const app = express();
 // Initialize sentry
 if (NODE_ENV !== 'development') {
   // configuration
-  Sentry.init(configs.sentryConfig(app));
+  // Sentry.init(configs.sentryConfig(app));
 
-  // handlers
-  app.use(Sentry.Handlers.requestHandler());
-  app.use(Sentry.Handlers.tracingHandler());
+  // // handlers
+  // app.use(Sentry.Handlers.requestHandler());
+  // app.use(Sentry.Handlers.tracingHandler());
 }
 
 // Required middleware list

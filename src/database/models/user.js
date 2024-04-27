@@ -58,23 +58,23 @@ export default function (sequelize) {
     }
   });
 
-  User.addHook('afterCreate', (instance) => {
-    // Send welcome message to user.
-    const payload = {
-      subject: 'Welcome to Express Starter',
-      html: 'Your account is created successfully!',
-    };
-    instance.sendMail(payload);
-  });
+  // User.addHook('afterCreate', (instance) => {
+  //   // Send welcome message to user.
+  //   const payload = {
+  //     subject: 'Welcome to Express Starter',
+  //     html: 'Your account is created successfully!',
+  //   };
+  //   instance.sendMail(payload);
+  // });
 
-  User.addHook('afterDestroy', (instance) => {
-    // Send good by message to user.
-    const payload = {
-      subject: 'Sorry to see you go',
-      html: 'Your account is destroyed successfully!',
-    };
-    instance.sendMail(payload);
-  });
+  // User.addHook('afterDestroy', (instance) => {
+  //   // Send good by message to user.
+  //   const payload = {
+  //     subject: 'Sorry to see you go',
+  //     html: 'Your account is destroyed successfully!',
+  //   };
+  //   instance.sendMail(payload);
+  // });
 
   return User;
 }
