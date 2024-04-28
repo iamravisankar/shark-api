@@ -78,7 +78,7 @@ jobs:
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.DEPLOY_KEY }}
+          key: $HOME/deploy_key
           port: 22
           source: "dist/*"
           target: "/home/ubuntu/shark-api"
@@ -88,7 +88,7 @@ jobs:
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.DEPLOY_KEY }}
+          key: $HOME/deploy_key
           port: 22
           script: |
             cd /home/ubuntu/shark-api
