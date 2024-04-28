@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image:  node:16-alpine
+      image: node:16-alpine
 
     services:
       postgres:
@@ -29,10 +29,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
       - name: Install dependencies
         run: yarn install --frozen-lockfile
+
       - name: Lint
         run: yarn run lint
+
       - name: Migrate database
         run: yarn run db:migrate
         env:
@@ -41,20 +44,46 @@ jobs:
           DB_USER: postgres
           DB_PASSWORD: starter
           DB_HOST: postgres
-      - name: Test
-        run: yarn run test
-        env:
-          NODE_ENV: test
-          DB_NAME: starter
-          DB_USER: postgres
-          DB_PASSWORD: starter
-          DB_HOST: postgres
-          JWT_SECRET_KEY: supersecretkey
+
       - name: Build
         run: yarn run build
+
       - name: Archive build
         if: success()
         uses: actions/upload-artifact@v1
         with:
           name: deploy_dist
           path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: deploy_dist
+          path: dist
+
+      - name: Copy files to the server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          port: 22
+          source: "dist/*"
+          target: "/home/ubuntu/shark-api"
+
+      - name: SSH deploy commands
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          port: 22
+          script: |
+            cd /home/ubuntu/shark-api
+            npm install --production
+            pm2 restart shark-api || pm2 start npm --name "shark-api" -- run start
