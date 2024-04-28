@@ -3,12 +3,12 @@ name: Node.js CI
 on:
   push:
     branches:
-      - '*'
+      - "*"
   pull_request:
     types:
       - opened
     branches:
-      - '*'
+      - "*"
 
 jobs:
   build:
@@ -65,6 +65,13 @@ jobs:
         with:
           name: deploy_dist
           path: dist
+
+      - name: Decode SSH key
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+        run: |
+          echo "$DEPLOY_KEY" | base64 -d > $HOME/deploy_key
+          chmod 600 $HOME/deploy_key
 
       - name: Copy files to the server
         uses: appleboy/scp-action@master
